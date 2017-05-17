@@ -6,9 +6,10 @@
 ## ReadonlyREST needs your help ⚠️
 ReadonlyREST is an GPLv3 open source project. Its ongoing development can only made possible thanks to the support of its backers:
 
-1. @nmaisonneuve 
-2. @Id57 
+1. @nmaisonneuve
+2. @Id57
 3. Joseph Bull
+4. Napas Udomsak
 
 If you care this project **keeps on existing**, read up the [ReadonlyREST Patreon campaign](https://www.patreon.com/readonlyrest).
 
@@ -20,7 +21,7 @@ In other words... no more proxies! Yay Ponies!
 
 ## Getting started
 
-### 1. Install the plugin 
+### 1. Install the plugin
 
 [Download](https://readonlyrest.com) the binary release for your Elasticsearch version from the official website.
 
@@ -33,8 +34,8 @@ Append either of these snippets to `conf/elasticsearch.yml`
 ```yml
 readonlyrest:
     enable: true
-    access_control_rules: 
-    
+    access_control_rules:
+
     - name: "Accept all requests from localhost"
       type: allow
       hosts: [127.0.0.1]
@@ -51,7 +52,7 @@ Remember to enable SSL whenever you use HTTP basic auth or API keys so your cred
 http.type: ssl_netty4
 readonlyrest:
     enable: true
-    
+
     ssl:
       enable: true
       keystore_file: "/elasticsearch/plugins/readonlyrest/keystore.jks"
@@ -65,7 +66,7 @@ readonlyrest:
 readonlyrest:
     enable: true
     response_if_req_forbidden: Sorry, your request is forbidden.
-    
+
     access_control_rules:
 
     - name: Accept all requests from localhost
@@ -84,7 +85,7 @@ readonlyrest:
 readonlyrest:
     enable: true
     verbosity: info # log unmatched requests
-    
+
     ssl:
       enable: true
       keystore_file: "/elasticsearch/plugins/readonlyrest/keystore.jks"
@@ -142,7 +143,7 @@ This is secure because the users connecting from their browsers will be asked to
 readonlyrest:
     enable: true
     response_if_req_forbidden: Forbidden by ReadonlyREST ES plugin
-    
+
     access_control_rules:
 
     - name: Accept requests from users in group team1 on index1
@@ -159,17 +160,17 @@ readonlyrest:
       type: allow
       groups: ["team1", "team2"]
       indices: ["index3"]
-    
+
     users:
-    
+
     - username: alice
       auth_key: alice:p455phrase
       groups: ["team1"]
-      
+
     - username: bob
       auth_key: bob:s3cr37
       groups: ["team2", "team4"]
-      
+
     - username: claire
       auth_key_sha1: 2bc37a406bd743e2b7a4cb33efc0c52bc2cb03f0 #claire:p455key
       groups: ["team1", "team5"]
@@ -183,7 +184,7 @@ readonlyrest:
 readonlyrest:
     enable: true
     response_if_req_forbidden: Forbidden by ReadonlyREST ES plugin
-    
+
     access_control_rules:
 
     - name: Accept requests from users in group team1 on index1
@@ -192,7 +193,7 @@ readonlyrest:
           name: "ldap1"                                       # ldap name from below 'ldaps' section
           groups: ["g1", "g2"]                                # group within 'ou=Groups,dc=example,dc=com'
       indices: ["index1"]
-      
+
     - name: Accept requests from users in group team2 on index2
       type: allow
       ldap_auth:
@@ -202,7 +203,7 @@ readonlyrest:
       indices: ["index2"]
 
     ldaps:
-    
+
     - name: ldap1
       host: "ldap1.example.com"
       port: 389                                                 # optional, default 389
@@ -218,7 +219,7 @@ readonlyrest:
       connection_timeout_in_sec: 10                             # optional, default 1
       request_timeout_in_sec: 10                                # optional, default 1
       cache_ttl_in_sec: 60                                      # optional, default 0 - cache disabled
-    
+
     - name: ldap2
       host: "ldap2.example2.com"
       port: 636
@@ -231,21 +232,21 @@ readonlyrest:
 readonlyrest:
     enable: true
     response_if_req_forbidden: Forbidden by ReadonlyREST ES plugin
-    
+
     access_control_rules:
 
     - name: Accept requests from users in group team1 on index1
       type: allow
-      ldap_authentication: "ldap1"  
+      ldap_authentication: "ldap1"
       ldap_authorization:
         name: "ldap1"                                       # ldap name from 'ldaps' section
         groups: ["g1", "g2"]                                # group within 'ou=Groups,dc=example,dc=com'
       indices: ["index1"]
-      
+
     - name: Accept requests from users in group team2 on index2
       type: allow
       ldap_authentication:
-        name: "ldap2"  
+        name: "ldap2"
         cache_ttl_in_sec: 60
       ldap_authorization:
         name: "ldap2"
@@ -254,7 +255,7 @@ readonlyrest:
       indices: ["index2"]
 
     ldaps:
-    
+
     - name: ldap1
       host: "ldap1.example.com"
       port: 389                                                 # default 389
@@ -270,7 +271,7 @@ readonlyrest:
       connection_timeout_in_sec: 10                             # default 1
       request_timeout_in_sec: 10                                # default 1
       cache_ttl_in_sec: 60                                      # default 0 - cache disabled
-    
+
     - name: ldap2
       host: "ldap2.example2.com"
       port: 636
@@ -294,9 +295,9 @@ This is useful if you already have a web server with all the credentials configu
 readonlyrest:
     enable: true
     response_if_req_forbidden: Forbidden by ReadonlyREST ES plugin
-    
+
     access_control_rules:
-    
+
     - name: "::Tweets::"
       type: allow
       methods: GET
@@ -324,21 +325,21 @@ readonlyrest:
       cache_ttl_in_sec: 60
 ```
 
-To define an external authentication service the user should specify: 
+To define an external authentication service the user should specify:
 - `name` for service (then this name is used as id in `service` attribute of `external_authentication` rule)
 - `authentication_endpoint` (GET request)
 - `success_status_code` - authentication response success status code
 
 Cache can be defined at the service level or/and at the rule level. In the example, both are shown, but you might opt for setting up either.
 
-### USE CASE: External groups provider: XML/JSON service (external authorization) 
+### USE CASE: External groups provider: XML/JSON service (external authorization)
 This external authorization connector makes it possible to resolve to what groups a users belong, using an external JSON or XML service.
 
 ```yml
 readonlyrest:
     enable: true
     response_if_req_forbidden: Forbidden by ReadonlyREST ES plugin
-    
+
     access_control_rules:
 
     - name: "::Tweets::"
@@ -379,8 +380,8 @@ readonlyrest:
       cache_ttl_in_sec: 60
 ```
 
-In example above, a user is authenticated by reverse proxy and then external service is asked for groups for that user. 
-If groups returned by the service contain any group declared in `groups` list, user is authorized and rule matches. 
+In example above, a user is authenticated by reverse proxy and then external service is asked for groups for that user.
+If groups returned by the service contain any group declared in `groups` list, user is authorized and rule matches.
 
 To define user groups provider you should specify:
 - `name` for service (then this name is used as id in `user_groups_provider` attribute of `groups_provider_authorization` rule)
@@ -398,7 +399,7 @@ As usual, the cache behaviour can be defined at service level or/and at rule lev
 ### Important!
 Before going to production, read this.
 
-#### disallow explicit indices 
+#### disallow explicit indices
 When you want to restrict access to certain indices, in order to prevent the user from overriding the index which has been specified in the URL, add this setting to the config.yml file:
 
 ```yml
@@ -408,7 +409,7 @@ rest.action.multi.allow_explicit_index: false
 The default value is true, but when set to false, Elasticsearch will reject requests that have an explicit index specified in the request body.
 
 #### Use hashed credentials
-Plain text `auth_key` is is great for testing, but remember to replace it with [`auth_key_sha256`](https://readonlyrest.com/documentation)! 
+Plain text `auth_key` is is great for testing, but remember to replace it with [`auth_key_sha256`](https://readonlyrest.com/documentation)!
 
 
 ## Key Features
