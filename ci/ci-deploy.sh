@@ -32,22 +32,22 @@ echo "PLUGIN_VERSION: $PLUGIN_VERSION"
 GIT_TAG=v$(echo $PLUGIN_FILE_BASE | sed 's/readonlyrest-//' | sed 's/\.zip//')
 echo "GIT_TAG: $GIT_TAG"
 
-# Check if this tag already exists, so we don't overwrite builds
-if git tag --list | grep ${GIT_TAG} > /dev/null; then
-    echo "Git tag $GIT_TAG already exists, exiting."
-    exit 0
-fi
-
-# TAGGING
-echo "Tagging as $GIT_TAG"
-if [[ "$(uname -s)" == *"Linux"* ]]; then
-    git remote set-url origin git@github.com:tian000/elasticsearch-readonlyrest-plugin.git
-    git config --global push.default matching
-    git config --global user.email "builds@travis-ci.com"
-    git config --global user.name "Travis CI"
-    git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
-    git push origin $GIT_TAG
-fi
+## Check if this tag already exists, so we don't overwrite builds
+#if git tag --list | grep ${GIT_TAG} > /dev/null; then
+#    echo "Git tag $GIT_TAG already exists, exiting."
+#    exit 0
+#fi
+#
+## TAGGING
+#echo "Tagging as $GIT_TAG"
+#if [[ "$(uname -s)" == *"Linux"* ]]; then
+#    git remote set-url origin git@github.com:tian000/elasticsearch-readonlyrest-plugin.git
+#    git config --global push.default matching
+#    git config --global user.email "builds@travis-ci.com"
+#    git config --global user.name "Travis CI"
+#    git tag $GIT_TAG -a -m "Generated tag from TravisCI build $TRAVIS_BUILD_NUMBER"
+#    git push origin $GIT_TAG
+#fi
 
 S3CLI="ci/dummy-s3cmd.sh"
 if [[ "$(uname -s)" == *"Linux"* ]]; then
