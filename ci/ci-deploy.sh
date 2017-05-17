@@ -13,7 +13,7 @@
 # Ultimately, I'm just going to commit changes to the build.gradle and this thing tags and uploads where necessary.
 
 CONF_FILE="conf.json"
-BUCKET="readonlyrest-data"
+BUCKET="uber-readonlyrest"
 DISTRIBUTION_PATH="build/distributions/"
 
 if [ ! -z "$TRAVIS_TAG" ]; then
