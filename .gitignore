@@ -36,3 +36,5 @@ src/test/eshome/*
 *.pem
 *.pkcs8
 *.p12
+
+\.DS_Store

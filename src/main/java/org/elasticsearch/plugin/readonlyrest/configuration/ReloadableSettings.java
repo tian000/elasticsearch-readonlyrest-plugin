@@ -16,7 +16,6 @@
  */
 package org.elasticsearch.plugin.readonlyrest.configuration;
 
-import org.elasticsearch.plugin.readonlyrest.es.ESClientSettingsContentProvider;
 import org.elasticsearch.plugin.readonlyrest.settings.ESSettings;
 import org.elasticsearch.plugin.readonlyrest.settings.RawSettings;
 import org.elasticsearch.plugin.readonlyrest.settings.RorSettings;
@@ -24,7 +23,6 @@ import org.elasticsearch.plugin.readonlyrest.settings.RorSettings;
 import java.io.File;
 import java.io.IOException;
 import java.util.WeakHashMap;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -44,12 +42,12 @@ public abstract class ReloadableSettings {
     onSettingsUpdate.accept(rorSettings.get());
   }
 
-  public void reload(ESClientSettingsContentProvider provider) {
-      provider.getSettingsContent().thenAccept(configurationContent -> {
-            this.rorSettings.set(new ESSettings(RawSettings.fromString(configurationContent)).getRorSettings());
-            notifyListeners();
-          }
-      ).join();
+  public void reload(SettingsContentProvider provider) {
+    provider.getSettingsContent().thenAccept(configurationContent -> {
+          this.rorSettings.set(new ESSettings(RawSettings.fromString(configurationContent)).getRorSettings());
+          notifyListeners();
+        }
+    ).join();
   }
 
   private void notifyListeners() {
