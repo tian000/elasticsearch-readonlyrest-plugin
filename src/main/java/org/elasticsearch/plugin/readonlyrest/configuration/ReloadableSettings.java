@@ -48,6 +48,7 @@ public abstract class ReloadableSettings {
     this.rorSettings.set(
             new ESSettings(RawSettings.fromFile(yamlFile)).getRorSettings()
     );
+    notifyListeners();
 //    provider.getSettingsContent()
     //    provider.getSettingsContent().thenAccept(configurationContent -> {
 //          this.rorSettings.set(new ESSettings(RawSettings.fromString(configurationContent)).getRorSettings());
