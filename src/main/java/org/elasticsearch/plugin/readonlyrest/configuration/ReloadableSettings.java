@@ -30,8 +30,10 @@ public abstract class ReloadableSettings {
 
   private final AtomicReference<RorSettings> rorSettings = new AtomicReference<>();
   private WeakHashMap<Consumer<RorSettings>, Boolean> onSettingsUpdateListeners = new WeakHashMap<>();
+  private final File yamlFile;
 
   public ReloadableSettings(File yaml) throws IOException {
+    this.yamlFile = yaml;
     this.rorSettings.set(
         new ESSettings(RawSettings.fromFile(yaml)).getRorSettings()
     );
@@ -42,12 +44,16 @@ public abstract class ReloadableSettings {
     onSettingsUpdate.accept(rorSettings.get());
   }
 
-  public void reload(SettingsContentProvider provider) {
-    provider.getSettingsContent().thenAccept(configurationContent -> {
-          this.rorSettings.set(new ESSettings(RawSettings.fromString(configurationContent)).getRorSettings());
-          notifyListeners();
-        }
-    ).join();
+  public void reload(SettingsContentProvider provider) throws IOException {
+    this.rorSettings.set(
+            new ESSettings(RawSettings.fromFile(yamlFile)).getRorSettings()
+    );
+//    provider.getSettingsContent()
+    //    provider.getSettingsContent().thenAccept(configurationContent -> {
+//          this.rorSettings.set(new ESSettings(RawSettings.fromString(configurationContent)).getRorSettings());
+//          notifyListeners();
+//        }
+//    ).join();
   }
 
   private void notifyListeners() {
