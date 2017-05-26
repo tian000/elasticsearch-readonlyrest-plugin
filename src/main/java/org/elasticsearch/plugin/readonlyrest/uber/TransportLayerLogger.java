@@ -1,17 +1,13 @@
 package org.elasticsearch.plugin.readonlyrest.uber;
 
-import org.elasticsearch.action.Action;
+import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.ActionRequest;
 import org.elasticsearch.action.ActionResponse;
 import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.common.inject.Singleton;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.json.JsonXContent;
 import org.elasticsearch.plugin.readonlyrest.ESContext;
-
-import org.apache.logging.log4j.Logger;
-import org.elasticsearch.plugin.readonlyrest.es.requestcontext.RequestContextImpl;
 import org.elasticsearch.plugin.readonlyrest.requestcontext.RequestContext;
 
 import java.io.IOException;
