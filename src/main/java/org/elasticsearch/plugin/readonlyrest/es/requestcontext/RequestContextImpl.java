@@ -404,4 +404,8 @@ public class RequestContextImpl extends Delayed implements RequestContext, Indic
         " }";
   }
 
+  public String getClusterName(){
+    return clusterService.getClusterName().value();
+  }
+
 }
