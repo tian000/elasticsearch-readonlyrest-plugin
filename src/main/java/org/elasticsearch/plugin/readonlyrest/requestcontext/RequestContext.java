@@ -45,5 +45,4 @@ public interface RequestContext extends IndicesRequestContext {
   void addToHistory(Block block, Set<RuleExitResult> results);
   void reset();
   void commit();
-  String getClusterName();
 }

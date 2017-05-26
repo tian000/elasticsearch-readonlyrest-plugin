@@ -43,7 +43,6 @@ import org.elasticsearch.plugin.readonlyrest.es.actionlisteners.ACLActionListene
 import org.elasticsearch.plugin.readonlyrest.es.actionlisteners.RuleActionListenersProvider;
 import org.elasticsearch.plugin.readonlyrest.es.requestcontext.RequestContextImpl;
 import org.elasticsearch.plugin.readonlyrest.settings.RorSettings;
-import org.elasticsearch.plugin.readonlyrest.uber.TransportLayerLogger;
 import org.elasticsearch.rest.BytesRestResponse;
 import org.elasticsearch.rest.RestChannel;
 import org.elasticsearch.rest.RestRequest;
@@ -78,8 +77,6 @@ public class IndexLevelActionFilter extends AbstractComponent implements ActionF
   private final ReloadableSettings reloadableSettings;
   private final Client client;
 
-  private final TransportLayerLogger tlLogger;
-
   @Inject
   public IndexLevelActionFilter(Settings settings, ReloadableSettingsImpl reloadableConfiguration,
                                 Client client, ClusterService clusterService, ThreadPool threadPool,
@@ -92,8 +89,7 @@ public class IndexLevelActionFilter extends AbstractComponent implements ActionF
     this.threadPool = threadPool;
     this.indexResolver = indexResolver;
     this.acl = new AtomicReference<>(Optional.empty());
-    this.ruleActionListenersProvider = new RuleActionListenersProvider(context);
-    this.tlLogger = new TransportLayerLogger(context);
+    this.ruleActionListenersProvider =  new RuleActionListenersProvider(context);
 
     this.reloadableSettings.addListener(this);
     scheduleConfigurationReload();
@@ -189,8 +185,8 @@ public class IndexLevelActionFilter extends AbstractComponent implements ActionF
             try {
               @SuppressWarnings("unchecked")
               ActionListener<Response> aclActionListener = (ActionListener<Response>) new ACLActionListener(
-                  request, (ActionListener<ActionResponse>) listener, ruleActionListenersProvider, rc, result,
-                  context, tlLogger);
+                  request, (ActionListener<ActionResponse>) listener, ruleActionListenersProvider, rc, result, context
+              );
               chain.proceed(task, action, request, aclActionListener);
               return null;
             } catch (Throwable e) {

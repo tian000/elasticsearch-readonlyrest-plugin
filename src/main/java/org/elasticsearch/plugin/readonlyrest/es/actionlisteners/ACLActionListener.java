@@ -25,9 +25,6 @@ import org.elasticsearch.plugin.readonlyrest.ESContext;
 import org.elasticsearch.plugin.readonlyrest.requestcontext.RequestContext;
 import org.elasticsearch.plugin.readonlyrest.acl.blocks.BlockExitResult;
 import org.elasticsearch.plugin.readonlyrest.acl.blocks.rules.Rule;
-import org.elasticsearch.plugin.readonlyrest.uber.TransportLayerLogger;
-
-import java.io.IOException;
 
 /**
  * Created by sscarduzio on 24/03/2017.
@@ -40,26 +37,22 @@ public class ACLActionListener implements ActionListener<ActionResponse> {
   private final ActionRequest request;
   private final RequestContext rc;
   private final BlockExitResult result;
-  private final TransportLayerLogger tlLogger;
 
   public ACLActionListener(ActionRequest request,
                            ActionListener<ActionResponse> baseListener,
                            RuleActionListenersProvider ruleActionListenersProvider,
                            RequestContext rc,
                            BlockExitResult result,
-                           ESContext context,
-                           TransportLayerLogger tlLogger) {
+                           ESContext context) {
     this.ruleActionListenersProvider = ruleActionListenersProvider;
     this.logger = context.logger(getClass());
     this.request = request;
     this.baseListener = baseListener;
     this.rc = rc;
     this.result = result;
-    this.tlLogger = tlLogger;
   }
 
   public void onResponse(ActionResponse response) {
-
     boolean shouldContinue = true;
     for (Rule r : result.getBlock().getRules()) {
       try {
@@ -71,18 +64,9 @@ public class ACLActionListener implements ActionListener<ActionResponse> {
         logger.error(r.getKey() + " error handling response: " + response);
         e.printStackTrace();
       }
-
     }
-
     if (shouldContinue) {
       baseListener.onResponse(response);
-    }
-
-    try {
-      tlLogger.onResponse(request, rc, response);
-    } catch (IOException e) {
-      logger.error("Error logging response: " + response);
-      e.printStackTrace();
     }
   }
 
@@ -100,16 +84,9 @@ public class ACLActionListener implements ActionListener<ActionResponse> {
         e.printStackTrace();
       }
     }
-
     if (shouldContinue) {
       baseListener.onFailure(e);
     }
 
-    try {
-      tlLogger.onFailure(request, rc, e);
-    } catch (IOException e1) {
-      logger.error("Error logging failure: " + e1);
-      e.printStackTrace();
-    }
   }
 }
